@@ -49,7 +49,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pets'
+              $ref: '#/components/schemas/Petsy'
         required: true
       responses:
         '200':
