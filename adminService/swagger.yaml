@@ -32,7 +32,7 @@ security:
   - default: []
 tags:
   - name: pet
-    description: Everything about your Pets
+    description: Everything about your Pets changed
     externalDocs:
       description: Find out more
       url: http://swagger.io
