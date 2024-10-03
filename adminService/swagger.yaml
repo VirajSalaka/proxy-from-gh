@@ -37,7 +37,7 @@ tags:
       description: Find out more
       url: http://swagger.io
 paths:
-  /pet:
+  /petssss:
     put:
       tags:
         - pet
@@ -98,7 +98,7 @@ paths:
                 $ref: '#/components/schemas/Pet'
         '405':
           description: Invalid input
-  /pet/findByStatus:
+  /petsss/findByStatus:
     get:
       tags:
         - pet
