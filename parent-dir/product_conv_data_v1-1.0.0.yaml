@@ -1,0 +1,1831 @@
+openapi: 3.0.3
+info:
+  title: product_conv_data_v1
+  description: API for Conv Product Data service
+  version: 1.0.0
+servers:
+ -
+  url: /
+security:
+ -
+  default: []
+tags:
+ -
+  name: conv-controller-impl
+  description: Conv Controller Impl
+paths:
+  /products:
+    get:
+      tags:
+       - conv-controller-impl
+      summary: Get a list of Products
+      description: This operation returns a list of Products
+      operationId: findAll
+      parameters:
+       -
+        name: unique_code
+        in: query
+        description: unique_code
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: sales_reference
+        in: query
+        description: sales_reference
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: site
+        in: query
+        description: site
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: subsite
+        in: query
+        description: subsite
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: gtin
+        in: query
+        description: gtin
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: seller
+        in: query
+        description: seller
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: product_id
+        in: query
+        description: product_id
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Response Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/canonical_conv_dto'
+        "404":
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firefly_exception_error_response'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firefly_exception_error_response'
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+         - oauth2
+        optional: false
+  /products/testing:
+    get:
+      tags:
+       - conv-controller-impl
+      summary: Get a list of Products from couchbase. Returns in string format.
+      description: This operation returns a list of Products Testing
+      operationId: findAllTesting
+      parameters:
+       -
+        name: unique_code
+        in: query
+        description: unique_code
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: sales_reference
+        in: query
+        description: sales_reference
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: site
+        in: query
+        description: site
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: subsite
+        in: query
+        description: subsite
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: gtin
+        in: query
+        description: gtin
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: seller
+        in: query
+        description: seller
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+       -
+        name: product_id
+        in: query
+        description: product_id
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Response Ok.
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firefly_exception_error_response'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firefly_exception_error_response'
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+         - oauth2
+        optional: false
+components:
+  schemas:
+    applied_taxes:
+      title: applied_taxes
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: string
+    attribute:
+      title: attribute
+      required:
+       - cardinality
+       - is_i18n
+       - name
+       - type
+      type: object
+      properties:
+        cardinality:
+          type: string
+          enum:
+           - MANY
+           - ONE
+        is_i18n:
+          type: boolean
+        name:
+          type: string
+        type:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+    bar_code_variant:
+      title: bar_code_variant
+      type: object
+      properties:
+        date_created_procurement:
+          type: string
+          description: Creation date on procurement system
+        gtin:
+          type: string
+          description: EAN
+        is_main:
+          type: boolean
+          description: Is the main EAN in the list of EANs associated to the SKU
+          example: false
+        promotional_end_date:
+          type: string
+          description: "In case of promotional EAN, date for the EAN to apply"
+        promotional_start_date:
+          type: string
+          description: "In case of promotional EAN, start date for the EAN to apply"
+    bar_code_variant_reference:
+      title: bar_code_variant_reference
+      type: object
+      properties:
+        gtin:
+          type: string
+          description: EAN
+        is_main:
+          type: boolean
+          description: Is the main EAN in the list of EANs associated to the SKU
+          example: false
+    big_decimal:
+      title: big_decimal
+      required:
+       - value
+      type: object
+      properties:
+        value:
+          type: string
+    brand:
+      title: brand
+      required:
+       - identifier
+      type: object
+      properties:
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    bundle:
+      title: bundle
+      type: object
+      properties:
+        is_linkable:
+          type: boolean
+          description: If the product's PDP link can be shown/used
+          example: false
+        product:
+          $ref: '#/components/schemas/product'
+        quantity:
+          $ref: '#/components/schemas/big_decimal'
+    bundle_reference:
+      title: bundle_reference
+      required:
+       - product
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/product_reference'
+        quantity:
+          $ref: '#/components/schemas/big_decimal'
+    calculated_badge:
+      title: calculated_badge
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the badge
+        value:
+          type: string
+          description: The value associated to the badge Not all badge types will contain a value
+    canonical_conv_dto:
+      title: canonical_conv_dto
+      type: object
+      properties:
+        business_object:
+          $ref: '#/components/schemas/mixer_offer'
+        product_id:
+          type: string
+          description: Product Identifier
+        sales_reference:
+          type: string
+          description: Sales reference
+        seller:
+          type: string
+          description: Seller of sales reference
+        site:
+          type: string
+          description: Site of sales reference
+        subsite:
+          type: string
+          description: Subsite of sales reference
+        variant_id:
+          type: string
+          description: Variant Identifier
+    category:
+      title: category
+      required:
+       - identifier
+      type: object
+      properties:
+        description:
+          type: array
+          description: The name of the product type (i18 field)
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        order_in_parent:
+          $ref: '#/components/schemas/big_decimal'
+        parent_category:
+          $ref: '#/components/schemas/category'
+        type:
+          type: string
+          description: The category type
+          enum:
+           - CD
+           - CG
+           - I
+           - L
+           - LC
+           - LE
+           - LM
+           - LP
+           - LS
+           - MM
+           - MP
+           - "N"
+           - PP
+           - PT
+           - R
+    center:
+      title: center
+      type: object
+      properties:
+        code:
+          type: string
+    center_packing_units:
+      title: center_packing_units
+      type: object
+      properties:
+        center_id:
+          type: string
+          description: center Id
+        units_by_center:
+          type: string
+          description: Units by center
+    classification:
+      title: classification
+      required:
+       - identifier
+      type: object
+      properties:
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        value:
+          type: string
+          description: The value of classification
+    color:
+      title: color
+      required:
+       - color_code
+       - identifier
+      type: object
+      properties:
+        color_code:
+          type: string
+        color_description:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        glossary:
+          $ref: '#/components/schemas/glossary'
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    delivery_methods:
+      title: delivery_methods
+      type: object
+      properties:
+        available_centers:
+          type: array
+          items:
+            $ref: '#/components/schemas/center'
+    delivery_types:
+      title: delivery_types
+      type: object
+      properties:
+        is_eci_express:
+          type: boolean
+          description: Flag to indicate that the product available for ECI Express delivery
+          example: false
+        is_eci_pickup:
+          type: boolean
+          description: Product enable to be pick up at ECI stores
+          example: false
+        is_home_delivery:
+          type: boolean
+          description: Shipping method Home Delivery supported
+          example: false
+        is_internet_exclusive:
+          type: boolean
+          description: Flag to indicate that the product is exclusive for internet
+          example: false
+        is_sts_pickup:
+          type: boolean
+          description: Product enabled to be picker up at covenience centers (STS - SiteToStore)
+          example: false
+        sts_companies:
+          type: array
+          description: List of centers supported for STS delivery ()
+          items:
+            $ref: '#/components/schemas/organization'
+    environment_signal:
+      title: environment_signal
+      required:
+       - description
+       - identifier
+       - type_lookup
+      type: object
+      properties:
+        description:
+          type: array
+          description: Description
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        type_lookup:
+          type: string
+          description: The code for the type lookup
+    firefly_error_validation:
+      title: firefly_error_validation
+      required:
+       - code
+       - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: Internal error code
+          example: code
+        field:
+          type: string
+          description: Error field
+          example: field
+        message:
+          type: string
+          description: Default error message
+          example: message
+      description: Cause of the error in a field
+    firefly_exception_detail:
+      title: firefly_exception_detail
+      type: object
+      properties:
+        error_code:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: '#/components/schemas/firefly_error_validation'
+    firefly_exception_error_response:
+      title: firefly_exception_error_response
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/firefly_exception_response'
+    firefly_exception_response:
+      title: firefly_exception_response
+      type: object
+      properties:
+        detail:
+          $ref: '#/components/schemas/firefly_exception_detail'
+        message:
+          type: string
+        request_id:
+          type: string
+    format:
+      title: format
+      required:
+       - description
+       - identifier
+       - type_lookup
+      type: object
+      properties:
+        description:
+          type: array
+          description: Description
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        type_lookup:
+          type: string
+          description: The code for the type lookup
+    freshness:
+      title: freshness
+      type: object
+      properties:
+        freshness_days:
+          $ref: '#/components/schemas/big_decimal'
+        is_alive:
+          type: boolean
+        is_consum_day:
+          type: boolean
+    glossary:
+      title: glossary
+      required:
+       - identifier
+      type: object
+      properties:
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        term:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    good_type:
+      title: good_type
+      required:
+       - identifier
+      type: object
+      properties:
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    i18n_text:
+      title: i18n_text
+      type: object
+      properties:
+        locale:
+          type: string
+          description: The locale for the language. Shall the concatenation of the language and the country separated by underscore (es_ES)
+        value:
+          type: string
+          description: The internationalized string
+    image_color:
+      title: image_color
+      type: object
+      properties:
+        mode:
+          type: string
+          description: Image mode
+        name:
+          type: array
+          description: Image name
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        ratio:
+          type: string
+          description: Image ratio
+        url:
+          type: string
+          description: Image url
+    lookup_table:
+      title: lookup_table
+      required:
+       - description
+       - identifier
+       - type_lookup
+      type: object
+      properties:
+        description:
+          type: array
+          description: Description
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        type_lookup:
+          type: string
+          description: The code for the type lookup
+    media_object:
+      title: media_object
+      required:
+       - media_type
+      type: object
+      properties:
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        identifier:
+          type: string
+        media_category_order:
+          $ref: '#/components/schemas/big_decimal'
+        media_category_type:
+          type: string
+        media_type:
+          type: string
+          enum:
+           - AUDIO
+           - DOCUMENT
+           - IMAGE
+           - LINK
+           - VIDEO
+        size:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+    metadata:
+      title: metadata
+      type: object
+      properties:
+        is_publish:
+          type: boolean
+    mixer_offer:
+      title: mixer_offer
+      required:
+       - identifier
+       - site
+      type: object
+      properties:
+        applied_taxes:
+          type: array
+          description: An amount of money paid to the government that is based on your income or the cost of goods or services you have bought
+          items:
+            $ref: '#/components/schemas/applied_taxes'
+        availability_starts:
+          type: string
+          description: Product availability date
+        barra:
+          type: string
+          description: The sale reference's family
+        bundle_of:
+          type: array
+          description: "In case that the offer may be included in a pack, contains the info about the pack"
+          items:
+            $ref: '#/components/schemas/product'
+        center_packing_units:
+          type: array
+          description: list of center packing unit
+          items:
+            $ref: '#/components/schemas/center_packing_units'
+        company:
+          type: string
+          description: The sale reference's company
+        delivery_point:
+          type: string
+          description: Delivery point
+        delivery_type_badges:
+          $ref: '#/components/schemas/delivery_types'
+        department:
+          type: string
+          description: The sale reference's department
+        external_id:
+          type: string
+          description: The external id
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        family:
+          type: string
+          description: The sale reference's family
+        first_available_date:
+          type: string
+          description: Date on which the product was displayed for the first time with the "Add to cart" button
+        good_types:
+          type: array
+          description: Good types
+          items:
+            $ref: '#/components/schemas/good_type'
+        identifier:
+          type: string
+          description: The Element identifier
+        is_publish:
+          type: boolean
+          description: Is publish
+          example: false
+        is_return_allowed:
+          type: boolean
+          description: FLag to indicate if a product can be returned
+          example: false
+        is_salable:
+          type: boolean
+          description: Is salable
+          example: false
+        is_searchable:
+          type: boolean
+          description: Is searchable
+          example: false
+        is_show_offer:
+          type: boolean
+          description: Flag relative to show offer in PDP/PLP
+          example: false
+        item_offered:
+          $ref: '#/components/schemas/product_variant'
+        launch_date:
+          type: string
+          description: Launch date
+        mixing_information:
+          $ref: '#/components/schemas/mixing_information'
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        perishables:
+          type: array
+          description: List of perishable
+          items:
+            $ref: '#/components/schemas/perishable'
+        pum_attributes:
+          $ref: '#/components/schemas/pum_attributes'
+        sales_reference:
+          type: string
+          description: The sale reference
+        section:
+          type: string
+          description: "In case of an ECI sku, represents the section to disambiguate sale references sold in different sections of the center"
+        site:
+          $ref: '#/components/schemas/site'
+        size_code:
+          type: string
+          description: The sale reference's family
+        temporal_descriptions:
+          type: array
+          description: The temporal description of offer (supermarket)
+          items:
+            $ref: '#/components/schemas/temporal_description'
+        type_reference:
+          type: string
+          description: "The type reference, values allowed are: firm purchase, direct exploitation, digital exploitation."
+    mixing_information:
+      title: mixing_information
+      required:
+       - type
+      type: object
+      properties:
+        child_references:
+          type: array
+          items:
+            $ref: '#/components/schemas/site_offer_reference'
+        old_reference:
+          $ref: '#/components/schemas/site_offer_reference'
+        parent_reference:
+          $ref: '#/components/schemas/site_offer_reference'
+        type:
+          type: string
+    model_detail:
+      title: model_detail
+      type: object
+      properties:
+        model_id:
+          type: string
+        web_model_description:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        web_model_id:
+          type: string
+    offer:
+      title: offer
+      required:
+       - identifier
+      type: object
+      properties:
+        applied_taxes:
+          type: array
+          description: An amount of money paid to the government that is based on your income or the cost of goods or services you have bought
+          items:
+            $ref: '#/components/schemas/applied_taxes'
+        availability_starts:
+          type: string
+          description: Product availability date
+        barra:
+          type: string
+          description: The sale reference's family
+        bundle_of:
+          type: array
+          description: "In case that the offer may be included in a pack, contains the info about the pack"
+          items:
+            $ref: '#/components/schemas/product'
+        company:
+          type: string
+          description: The sale reference's company
+        delivery_point:
+          type: string
+          description: Delivery point
+        delivery_type_badges:
+          $ref: '#/components/schemas/delivery_types'
+        department:
+          type: string
+          description: The sale reference's department
+        external_id:
+          type: string
+          description: The external id
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        family:
+          type: string
+          description: The sale reference's family
+        good_types:
+          type: array
+          description: Good types
+          items:
+            $ref: '#/components/schemas/good_type'
+        identifier:
+          type: string
+          description: The Element identifier
+        is_publish:
+          type: boolean
+          description: Is publish
+          example: false
+        is_return_allowed:
+          type: boolean
+          description: FLag to indicate if a product can be returned
+          example: false
+        is_salable:
+          type: boolean
+          description: Is salable
+          example: false
+        is_searchable:
+          type: boolean
+          description: Is searchable
+          example: false
+        is_show_offer:
+          type: boolean
+          description: Flag relative to show offer in PDP/PLP
+          example: false
+        item_offered:
+          $ref: '#/components/schemas/product_variant'
+        launch_date:
+          type: string
+          description: Launch date
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        sales_reference:
+          type: string
+          description: The sale reference
+        section:
+          type: string
+          description: "In case of an ECI sku, represents the section to disambiguate sale references sold in different sections of the center"
+        size_code:
+          type: string
+          description: The sale reference's family
+        temporal_descriptions:
+          type: array
+          description: The temporal description of offer (supermarket)
+          items:
+            $ref: '#/components/schemas/temporal_description'
+        type_reference:
+          type: string
+          description: "The type reference, values allowed are: firm purchase, direct exploitation, digital exploitation."
+    offer_reference:
+      title: offer_reference
+      required:
+       - sales_reference
+       - seller
+      type: object
+      properties:
+        barra:
+          type: string
+        bundle_of:
+          type: array
+          items:
+            $ref: '#/components/schemas/product_reference'
+        company:
+          type: string
+        department:
+          type: string
+        family:
+          type: string
+        good_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/good_type'
+        is_salable:
+          type: boolean
+        item_offered:
+          $ref: '#/components/schemas/product_variant_reference'
+        sales_reference:
+          type: string
+        section:
+          type: string
+        seller:
+          $ref: '#/components/schemas/seller_reference'
+        size_code:
+          type: string
+    offer_rules:
+      title: offer_rules
+      type: object
+      properties:
+        is_in_store_pickup_mkp:
+          type: boolean
+        is_limit_sale:
+          type: boolean
+    organization:
+      title: organization
+      required:
+       - identifier
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the provider.
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    perishable:
+      title: perishable
+      type: object
+      properties:
+        code:
+          type: string
+          description: This code is used for add to cart
+        locale:
+          type: string
+          description: The locale for the language. Shall the concatenation of the language and the country separated by underscore (es_ES)
+        value:
+          type: string
+          description: The internationalized string
+    presentation:
+      title: presentation
+      required:
+       - description
+       - identifier
+       - type_lookup
+      type: object
+      properties:
+        description:
+          type: array
+          description: Description
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        type_lookup:
+          type: string
+          description: The code for the type lookup
+    presentation_details:
+      title: presentation_details
+      type: object
+      properties:
+        format:
+          $ref: '#/components/schemas/format'
+        freshness:
+          $ref: '#/components/schemas/freshness'
+        is_panification_product:
+          type: boolean
+        package_unit:
+          $ref: '#/components/schemas/big_decimal'
+        presentation:
+          $ref: '#/components/schemas/presentation'
+        quantity:
+          type: string
+    price:
+      title: price
+      type: object
+      properties:
+        available_centers:
+          type: array
+          items:
+            $ref: '#/components/schemas/center'
+    product:
+      title: product
+      required:
+       - identifier
+      type: object
+      properties:
+        bar_code_variants:
+          type: array
+          description: The parent product for the variant
+          items:
+            $ref: '#/components/schemas/bar_code_variant'
+        basic_color:
+          $ref: '#/components/schemas/color'
+        brand:
+          $ref: '#/components/schemas/brand'
+        calculated_badges:
+          type: array
+          description: The value associated to the badge Not all badge types will contain a value
+          items:
+            $ref: '#/components/schemas/calculated_badge'
+        categories:
+          type: array
+          description: The list of categories to wich
+          items:
+            $ref: '#/components/schemas/category'
+        color:
+          $ref: '#/components/schemas/color'
+        customised_request:
+          type: string
+          description: The customised request
+        depth:
+          $ref: '#/components/schemas/quantitative_value'
+        digital_store:
+          type: string
+          description: The abstract store associated to store
+        environment_signal:
+          $ref: '#/components/schemas/environment_signal'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        gross_volume:
+          $ref: '#/components/schemas/quantitative_value'
+        gtin:
+          type: string
+          description: The EAN associated with the product product.scopes variant
+        has_complete_documentation:
+          type: boolean
+          description: Flag relative to complete documentation
+          example: false
+        height:
+          $ref: '#/components/schemas/quantitative_value'
+        identifier:
+          type: string
+          description: The Element identifier
+        image_color:
+          $ref: '#/components/schemas/image_color'
+        internal_gtin:
+          type: string
+          description: EANI (ECI internal ean) product.scopes variant
+        is_digital:
+          type: boolean
+          description: Flag to indicate that product is
+          example: false
+        is_eci_express:
+          type: boolean
+          description: Flag to indicate that the product available for ECI Express
+          example: false
+        is_eci_express_exclusive:
+          type: boolean
+          description: Flag to indicate that the product is only available as ECI Express
+          example: false
+        is_luxury:
+          type: boolean
+          description: Flag to indicate that product is tagged as luxury
+          example: false
+        is_soldable_without_image:
+          type: boolean
+          description: Flag to if product can be sold without photo
+          example: false
+        is_variant_of:
+          $ref: '#/components/schemas/product'
+        main_category:
+          $ref: '#/components/schemas/category'
+        manufacturer:
+          $ref: '#/components/schemas/organization'
+        media_objects:
+          type: array
+          description: The media objects of variant
+          items:
+            $ref: '#/components/schemas/media_object'
+        model_detail:
+          $ref: '#/components/schemas/model_detail'
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        offer_rules:
+          $ref: '#/components/schemas/offer_rules'
+        offers:
+          type: array
+          description: The parent product for the variant
+          items:
+            $ref: '#/components/schemas/offer'
+        pack_products:
+          type: array
+          description: "If product is a pack, contains the information about the products that compose the pack"
+          items:
+            $ref: '#/components/schemas/bundle'
+        pack_type:
+          type: string
+          description: "If product is a pack, represents that type of the pack"
+          enum:
+           - AMBIENT
+           - COLLECTION
+           - CONFIGURABLE
+           - COORDINATED
+           - FABRICANTE
+           - LOTE
+        piece_weight:
+          $ref: '#/components/schemas/unit_text'
+        presentation_details:
+          $ref: '#/components/schemas/presentation_details'
+        product_id:
+          type: string
+          description: Product ID (A/B/MP)
+        product_variants:
+          type: array
+          description: List of product variant references
+          items:
+            $ref: '#/components/schemas/product_variant'
+        provider:
+          $ref: '#/components/schemas/provider'
+        purchase_management_stock:
+          $ref: '#/components/schemas/purchase_management_stock'
+        related_services:
+          type: array
+          description: The services related to the product
+          items:
+            $ref: '#/components/schemas/signal_service'
+        sale_type:
+          $ref: '#/components/schemas/lookup_table'
+        seller_info:
+          $ref: '#/components/schemas/seller'
+        service_agreement_type:
+          type: string
+          description: The service agreement type
+        sizes:
+          type: array
+          description: Sizes of product variant
+          items:
+            $ref: '#/components/schemas/size_info'
+        special_handling_type:
+          $ref: '#/components/schemas/special_handling_type'
+        special_merchandise_indicator:
+          type: string
+          description: The special merchandise indicator
+        specific_attributes:
+          type: array
+          description: The specific attributes from product
+          items:
+            $ref: '#/components/schemas/specific_attributes'
+        time_restrictions:
+          $ref: '#/components/schemas/time_restriction'
+        transport_details:
+          $ref: '#/components/schemas/transport_details'
+        type:
+          $ref: '#/components/schemas/product_type'
+        unique_code:
+          type: string
+          description: The unique code of the variant product.scopes variant
+        varies_by:
+          type: array
+          description: "List of properties of the product by which variants may be defined(color, size, volume, fashionSize, etc..."
+          items:
+            type: string
+        width:
+          $ref: '#/components/schemas/quantitative_value'
+    product_reference:
+      title: product_reference
+      required:
+       - identifier
+       - product_id
+      type: object
+      properties:
+        identifier:
+          type: string
+        pack_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/bundle_reference'
+        pack_type:
+          type: string
+          enum:
+           - AMBIENT
+           - COLLECTION
+           - CONFIGURABLE
+           - COORDINATED
+           - FABRICANTE
+           - LOTE
+        product_id:
+          type: string
+        product_variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/product_variant_reference'
+    product_type:
+      title: product_type
+      required:
+       - identifier
+      type: object
+      properties:
+        description:
+          type: array
+          description: Description
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        parent_product_type:
+          $ref: '#/components/schemas/product_type'
+    product_variant:
+      title: product_variant
+      required:
+       - identifier
+      type: object
+      properties:
+        bar_code_variants:
+          type: array
+          description: The parent product for the variant
+          items:
+            $ref: '#/components/schemas/bar_code_variant'
+        basic_color:
+          $ref: '#/components/schemas/color'
+        calculated_badges:
+          type: array
+          description: The value associated to the badge Not all badge types will contain a value
+          items:
+            $ref: '#/components/schemas/calculated_badge'
+        color:
+          $ref: '#/components/schemas/color'
+        customised_request:
+          type: string
+          description: The customised request
+        depth:
+          $ref: '#/components/schemas/quantitative_value'
+        environment_signal:
+          $ref: '#/components/schemas/environment_signal'
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        gross_volume:
+          $ref: '#/components/schemas/quantitative_value'
+        gtin:
+          type: string
+          description: The EAN associated with the product product.scopes variant
+        has_complete_documentation:
+          type: boolean
+          description: Flag relative to complete documentation
+          example: false
+        height:
+          $ref: '#/components/schemas/quantitative_value'
+        identifier:
+          type: string
+          description: The Element identifier
+        image_color:
+          $ref: '#/components/schemas/image_color'
+        internal_gtin:
+          type: string
+          description: EANI (ECI internal ean) product.scopes variant
+        is_digital:
+          type: boolean
+          description: Flag to indicate that product is
+          example: false
+        is_eci_express:
+          type: boolean
+          description: Flag to indicate that the product available for ECI Express
+          example: false
+        is_eci_express_exclusive:
+          type: boolean
+          description: Flag to indicate that the product is only available as ECI Express
+          example: false
+        is_luxury:
+          type: boolean
+          description: Flag to indicate that product is tagged as luxury
+          example: false
+        is_soldable_without_image:
+          type: boolean
+          description: Flag to if product can be sold without photo
+          example: false
+        is_variant_of:
+          $ref: '#/components/schemas/product'
+        manufacturer:
+          $ref: '#/components/schemas/organization'
+        media_objects:
+          type: array
+          description: The media objects of variant
+          items:
+            $ref: '#/components/schemas/media_object'
+        model_detail:
+          $ref: '#/components/schemas/model_detail'
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        offer_rules:
+          $ref: '#/components/schemas/offer_rules'
+        offers:
+          type: array
+          description: The parent product for the variant
+          items:
+            $ref: '#/components/schemas/offer'
+        piece_weight:
+          $ref: '#/components/schemas/unit_text'
+        presentation_details:
+          $ref: '#/components/schemas/presentation_details'
+        purchase_management_stock:
+          $ref: '#/components/schemas/purchase_management_stock'
+        related_services:
+          type: array
+          description: The services related to the product
+          items:
+            $ref: '#/components/schemas/signal_service'
+        sale_type:
+          $ref: '#/components/schemas/lookup_table'
+        seller_info:
+          $ref: '#/components/schemas/seller'
+        service_agreement_type:
+          type: string
+          description: The service agreement type
+        sizes:
+          type: array
+          description: Sizes of product variant
+          items:
+            $ref: '#/components/schemas/size_info'
+        special_handling_type:
+          $ref: '#/components/schemas/special_handling_type'
+        special_merchandise_indicator:
+          type: string
+          description: The special merchandise indicator
+        specific_attributes:
+          type: array
+          description: The specific attributes from product
+          items:
+            $ref: '#/components/schemas/specific_attributes'
+        time_restrictions:
+          $ref: '#/components/schemas/time_restriction'
+        transport_details:
+          $ref: '#/components/schemas/transport_details'
+        unique_code:
+          type: string
+          description: The unique code of the variant product.scopes variant
+        width:
+          $ref: '#/components/schemas/quantitative_value'
+    product_variant_reference:
+      title: product_variant_reference
+      required:
+       - identifier
+      type: object
+      properties:
+        bar_code_variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/bar_code_variant_reference'
+        gtin:
+          type: string
+        identifier:
+          type: string
+        is_variant_of:
+          $ref: '#/components/schemas/product_reference'
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/offer_reference'
+        unique_code:
+          type: string
+    provider:
+      title: provider
+      required:
+       - identifier
+      type: object
+      properties:
+        brand:
+          $ref: '#/components/schemas/brand'
+        description:
+          type: string
+          description: Description of the provider.
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    pum_attributes:
+      title: pum_attributes
+      type: object
+      properties:
+        conversion_factor:
+          type: string
+          description: Conversion factor
+        is_weight_scale:
+          type: boolean
+          description: is weight scale
+          example: false
+        item_weight:
+          type: string
+          description: item weight
+        product_quantity:
+          type: string
+          description: product quantity
+        product_units:
+          type: string
+          description: product units
+    purchase_management_stock:
+      title: purchase_management_stock
+      type: object
+      properties:
+        classifications:
+          type: array
+          description: List of classification for the purchase management stock
+          items:
+            $ref: '#/components/schemas/classification'
+        management_type:
+          type: string
+          description: The management type
+    quantitative_value:
+      title: quantitative_value
+      required:
+       - value
+      type: object
+      properties:
+        unit_code:
+          type: string
+        unit_text:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        value:
+          $ref: '#/components/schemas/big_decimal'
+    seller:
+      title: seller
+      type: object
+      properties:
+        external_id:
+          type: string
+        id:
+          type: string
+        legal_name:
+          type: string
+        name:
+          type: string
+        tax_id:
+          type: string
+    seller_reference:
+      title: seller_reference
+      type: object
+      properties:
+        identifier:
+          type: string
+    signal_service:
+      title: signal_service
+      required:
+       - name
+      type: object
+      properties:
+        mode:
+          type: string
+        name:
+          type: string
+    site:
+      title: site
+      required:
+       - identifier
+      type: object
+      properties:
+        identifier:
+          type: string
+        parent:
+          $ref: '#/components/schemas/site'
+    site_info:
+      title: site_info
+      required:
+       - identifier
+      type: object
+      properties:
+        delivery_method:
+          $ref: '#/components/schemas/delivery_methods'
+        identifier:
+          type: string
+        parent:
+          $ref: '#/components/schemas/site'
+        price:
+          $ref: '#/components/schemas/price'
+    site_offer_reference:
+      title: site_offer_reference
+      required:
+       - sales_reference
+       - seller
+      type: object
+      properties:
+        barra:
+          type: string
+        bundle_of:
+          type: array
+          items:
+            $ref: '#/components/schemas/product_reference'
+        company:
+          type: string
+        department:
+          type: string
+        family:
+          type: string
+        good_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/good_type'
+        is_salable:
+          type: boolean
+        item_offered:
+          $ref: '#/components/schemas/product_variant_reference'
+        sales_reference:
+          type: string
+        section:
+          type: string
+        seller:
+          $ref: '#/components/schemas/seller_reference'
+        site:
+          $ref: '#/components/schemas/site_info'
+        size_code:
+          type: string
+    size:
+      title: size
+      required:
+       - identifier
+      type: object
+      properties:
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+        size_type:
+          $ref: '#/components/schemas/size_type'
+    size_info:
+      title: size_info
+      type: object
+      properties:
+        main_size:
+          $ref: '#/components/schemas/size'
+        manufacturer_size:
+          $ref: '#/components/schemas/size'
+        name:
+          type: string
+    size_type:
+      title: size_type
+      required:
+       - identifier
+      type: object
+      properties:
+        external_identifier:
+          type: string
+          description: The external identifier of the element
+        identifier:
+          type: string
+          description: The Element identifier
+        name:
+          type: array
+          description: The name of the element
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    special_handling_type:
+      title: special_handling_type
+      type: object
+      properties:
+        is_alcohol:
+          type: boolean
+        is_preparation_required:
+          type: boolean
+    specific_attributes:
+      title: specific_attributes
+      required:
+       - group_name
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/attribute'
+        group_name:
+          type: string
+        group_type:
+          type: string
+          enum:
+           - SPEC_SECONDARY_TEMPLATE
+           - SPEC_STORE
+    temporal_description:
+      title: temporal_description
+      type: object
+      properties:
+        centers:
+          type: array
+          description: The warehouse centers of temporal description (supermarket)
+          items:
+            $ref: '#/components/schemas/warehouse_details'
+        description:
+          type: array
+          description: The temporal description of offer (supermarket)
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    time_restriction:
+      title: time_restriction
+      type: object
+      properties:
+        is_alcohol:
+          type: boolean
+        is_bread:
+          type: boolean
+        is_cooled:
+          type: boolean
+        is_frozen:
+          type: boolean
+        is_required_preparation:
+          type: boolean
+    transport_details:
+      title: transport_details
+      type: object
+      properties:
+        bulky_description:
+          $ref: '#/components/schemas/lookup_table'
+        is_bulky:
+          type: boolean
+    unit_text:
+      title: unit_text
+      type: object
+      properties:
+        unit_text:
+          type: array
+          items:
+            $ref: '#/components/schemas/i18n_text'
+    warehouse_details:
+      title: warehouse_details
+      type: object
+      properties:
+        code:
+          type: string
+          description: The code of warehouse (supermarket)
+        identifier:
+          type: string
+          description: The identifier of warehouse (supermarket)
+  securitySchemes:
+    default:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://test.com
+          scopes: {}
+x-wso2-cors:
+  corsConfigurationEnabled: false
+  accessControlAllowOrigins:
+   - '*'
+  accessControlAllowCredentials: false
+  accessControlAllowHeaders:
+   - authorization
+   - Access-Control-Allow-Origin
+   - Content-Type
+   - SOAPAction
+  accessControlAllowMethods:
+   - GET
+   - PUT
+   - POST
+   - DELETE
+   - PATCH
+   - OPTIONS
+x-wso2-production-endpoints:
+  urls:
+   - http://conv-data-api.eci.geci/
+  type: http
+x-wso2-sandbox-endpoints:
+  urls:
+   - http://conv-data-api.eci.geci/
+  type: http
+x-wso2-basePath: /products/conv-data/v1/1.0.0
+x-wso2-transports:
+ - http
+ - https
+x-wso2-response-cache:
+  enabled: false
+  cacheTimeoutInSeconds: 300
