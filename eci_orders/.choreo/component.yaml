@@ -1,0 +1,6 @@
+schemaVersion: 0.9
+proxy:
+  type: REST
+  schemaFilePath: GECI_Orders-2.8.0.yaml
+  thumbnailPath: /inv-api/assets/thumbnail.png
+  docPath: /inv-api/assets/documents

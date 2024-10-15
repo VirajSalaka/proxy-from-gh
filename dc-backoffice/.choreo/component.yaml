@@ -1,0 +1,6 @@
+schemaVersion: 0.9
+proxy:
+  type: REST
+  schemaFilePath: dc-backoffice-geci-1.6.yaml
+  thumbnailPath: /inv-api/assets/thumbnail.png
+  docPath: /inv-api/assets/documents
