@@ -1,0 +1,357 @@
+openapi: 3.0.1
+info:
+  title: searcher_typeahead
+  description: Typeahead service API.
+  contact:
+    name: Stratio BD
+    email: buscador@stratio.com
+  version: 1.0.0
+servers:
+ -
+  url: http://qbu-typeahead.uat.eci.geci
+  description: Generated server url
+security:
+ -
+  default: []
+tags:
+ -
+  name: Typeahead
+  description: Typeahead service
+paths:
+  /typeahead/v1/sites/{siteId}/autocomplete:
+    post:
+      tags:
+       - Typeahead
+      summary: Typeahead autocomplete service
+      description: Allows to exploit existing suggestions
+      operationId: autocomplete
+      parameters:
+       -
+        name: siteId
+        in: path
+        description: Site identifier
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Query being executed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuggestionRequestWebDto'
+        required: true
+      responses:
+        "201":
+          description: Returns the list of suggestions
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/SuggestionResponseWebDto'
+        "400":
+          description: Bad request
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseWebDto'
+        "404":
+          description: Site not found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseWebDto'
+        "500":
+          description: Internal server error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseWebDto'
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: 10KPerMin
+      x-wso2-application-security:
+        security-types:
+         - oauth2
+        optional: false
+components:
+  schemas:
+    CategoryContextRequestWebDto:
+      type: object
+      properties:
+        category_id:
+          type: string
+          description: Context item category_id. Field with category rol in active model.
+          example: categories
+        type:
+          type: string
+          description: Allows to define whether to prioritize or filter the context
+          example: FILTER
+      description: Context item categoryContext
+    ConfigurationRequestWebDto:
+      required:
+       - contexts
+      type: object
+      properties:
+        contexts:
+          $ref: '#/components/schemas/ContextRequestWebDto'
+      description: Configuration model to be applied
+    ContextRequestWebDto:
+      type: object
+      properties:
+        categoryContext:
+          $ref: '#/components/schemas/CategoryContextRequestWebDto'
+        stockCentreContext:
+          $ref: '#/components/schemas/StockCentreContextRequestWebDto'
+      description: Configuration contexts model to be applied
+    InterfaceRequestWebDto:
+      required:
+       - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Interface name
+          example: document or brands
+        fields:
+          type: array
+          items:
+            type: string
+        size:
+          minimum: 1
+          type: integer
+          description: Number of suggestions to be retrieved
+          format: int32
+          example: 10
+      description: Interface model to be retrieved
+    QueryRequestWebDto:
+      required:
+       - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Text to be autocompleted
+          example: cuchi
+        configuration:
+          $ref: '#/components/schemas/ConfigurationRequestWebDto'
+      description: Autocomplete query parameters
+    StockCentreContextRequestWebDto:
+      type: object
+      properties:
+        stock_centre:
+          type: string
+          description: Context item stock_centre. Field with stock centres values. It must exist in active model.
+          example: skus.stock_centres
+        type:
+          type: string
+          description: Allows to define whether to prioritize or filter the context
+          example: FILTER
+      description: Context item stockCentreContext
+    SuggestionRequestWebDto:
+      required:
+       - interfaces
+       - query
+      type: object
+      properties:
+        origin:
+          type: string
+          description: Origin system of the request
+          example: Moonshine
+        query:
+          $ref: '#/components/schemas/QueryRequestWebDto'
+        interfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterfaceRequestWebDto'
+    DocumentSuggestionResponseWebDto:
+      type: object
+      properties:
+        document:
+          type: object
+          additionalProperties:
+            type: object
+            description: Document suggestion
+          description: Document suggestion
+        score:
+          type: number
+          description: Suggestion's score
+          format: float
+      description: List of documents
+    InfoResponseWebDto:
+      type: object
+      properties:
+        took:
+          type: integer
+          description: Request execution time in ms
+          format: int64
+          example: 27
+      description: General execution information
+    InterfaceResponseWebDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Interface name
+        suggestions:
+          type: array
+          description: List of suggestions
+          items:
+            $ref: '#/components/schemas/SirtSuggestionResponseWebDto'
+        documents:
+          type: array
+          description: List of documents
+          items:
+            $ref: '#/components/schemas/DocumentSuggestionResponseWebDto'
+      description: Interface model applied
+    SirtSuggestionResponseWebDto:
+      type: object
+      properties:
+        suggestion:
+          type: string
+          description: Text to be suggested
+          example: Pantalón
+        suggestion_id:
+          type: string
+          description: "Suggestion identifier for compound attributes. Used also for hierarchy interface. For example, in brand, it would be brand identifier"
+          example: "999.123456789"
+        category_id:
+          type: string
+          description: Suggestion's category id
+          example: "999.123456789"
+        category_name:
+          type: string
+          description: Suggestion's category name
+          example: Moda mujer
+        score:
+          type: number
+          description: Suggestion's score
+          format: float
+      description: List of suggestions
+    SuggestionResponseWebDto:
+      required:
+       - info
+       - interfaces
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/InfoResponseWebDto'
+        interfaces:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Interface name
+            suggestions:
+              type: array
+              description: List of suggestions
+              items:
+                $ref: '#/components/schemas/SirtSuggestionResponseWebDto'
+            documents:
+              type: array
+              description: List of documents
+              items:
+                $ref: '#/components/schemas/DocumentSuggestionResponseWebDto'
+          description: Interface model applied
+    ErrorDetailWebDto:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal error code
+          format: int32
+          example: 104
+        message:
+          type: string
+          description: Internal error message
+          example: Wrong configuration
+        description:
+          type: string
+          description: Detailed internal error message
+          example: Missing request information object
+      description: Internal error information
+      example: Missing request information object
+    ErrorResponseWebDto:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorWebDto'
+    ErrorWebDto:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Internal error message
+          example: Wrong configuration
+        requestId:
+          type: string
+          description: Request correlation identifier
+          example: 234b6b76c2ea1307
+        details:
+          $ref: '#/components/schemas/ErrorDetailWebDto'
+        code:
+          type: integer
+          description: Internal error code
+          format: int32
+          example: 103
+      description: Internal error information
+    Health:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        details:
+          type: object
+          additionalProperties:
+            type: object
+    Status:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+  securitySchemes:
+    default:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://test.com
+          scopes: {}
+x-throttling-tier: 25KPerMin
+x-wso2-cors:
+  corsConfigurationEnabled: false
+  accessControlAllowOrigins:
+   - '*'
+  accessControlAllowCredentials: false
+  accessControlAllowHeaders:
+   - authorization
+   - Access-Control-Allow-Origin
+   - Content-Type
+   - SOAPAction
+  accessControlAllowMethods:
+   - GET
+   - PUT
+   - POST
+   - DELETE
+   - PATCH
+   - OPTIONS
+x-wso2-production-endpoints:
+  urls:
+   - https://qbu-typeahead.eci.geci
+  type: http
+x-wso2-sandbox-endpoints:
+  urls:
+   - https://qbu-typeahead.eci.geci
+  type: http
+x-wso2-basePath: /services/searcher-typeahead/v1/1.0.0
+x-wso2-transports:
+ - http
+ - https
+x-wso2-response-cache:
+  enabled: false
+  cacheTimeoutInSeconds: 300
