@@ -2,3 +2,6 @@ schemaVersion: 1.1
 proxy:
   type: REST
   schemaFilePath: searcher_typeahead-1.0.0.yaml
+  thumbnailPath: /inv-api/assets/thumbnail.png
+  docPath: /inv-api/assets/documents
+
