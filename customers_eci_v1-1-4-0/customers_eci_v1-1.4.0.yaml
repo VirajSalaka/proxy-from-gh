@@ -7,7 +7,7 @@ servers:
  -
   url: /customers/eci/v1
 paths:
-  /customerstest3:
+  /customerstest4:
     post:
       tags:
        - customer
