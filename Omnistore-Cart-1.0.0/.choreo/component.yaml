@@ -1,0 +1,4 @@
+schemaVersion: 1.1
+proxy:
+  type: REST
+  schemaFilePath: Omnistore-Cart-1.0.0.yaml
