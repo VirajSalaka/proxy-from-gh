@@ -1,6 +1,0 @@
-schemaVersion: 0.9
-proxy:
-  type: REST
-  schemaFilePath: Omnistore-Product-1.0.0.yaml
-  thumbnailPath: /inv-api/assets/thumbnail.png
-  docPath: /inv-api/assets/documents

@@ -1,6 +1,0 @@
-schemaVersion: 1.1
-proxy:
-  type: REST
-  schemaFilePath: ecommerce_search_v1-1.19.0.yaml
-  thumbnailPath: /inv-api/assets/thumbnail.png
-  docPath: /inv-api/assets/documents

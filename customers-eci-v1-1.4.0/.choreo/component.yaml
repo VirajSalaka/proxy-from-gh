@@ -1,0 +1,4 @@
+schemaVersion: 0.9
+proxy:
+  type: REST
+  schemaFilePath: customers_eci_v1-1.4.0.yaml
