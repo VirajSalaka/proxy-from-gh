@@ -1,0 +1,4 @@
+schemaVersion: 1.1
+proxy:
+  type: REST
+  schemaFilePath: Omnistore-Product-1.0.0.yaml
