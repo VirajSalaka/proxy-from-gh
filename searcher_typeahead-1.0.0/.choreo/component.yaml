@@ -1,0 +1,4 @@
+schemaVersion: 1.1
+proxy:
+  type: REST
+  schemaFilePath: searcher_typeahead-1.0.0.yaml
